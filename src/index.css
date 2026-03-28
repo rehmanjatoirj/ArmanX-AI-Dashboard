@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  html.light {
+    color-scheme: light;
+  }
+
+  body {
+    @apply min-h-screen bg-brand-navy bg-brand-grid font-sans text-slate-100 antialiased transition-colors duration-300;
+  }
+
+  html.light body {
+    @apply bg-slate-50 text-slate-900;
+    background-image:
+      radial-gradient(circle at top right, rgba(0, 212, 255, 0.08), transparent 32%),
+      radial-gradient(circle at bottom left, rgba(29, 158, 117, 0.1), transparent 35%);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 212, 255, 0.4) transparent;
+  }
+}
+
+@layer utilities {
+  .panel {
+    @apply rounded-3xl border border-white/10 bg-white/5 shadow-soft backdrop-blur-xl;
+  }
+
+  html.light .panel {
+    @apply border-slate-200 bg-white shadow-lg;
+  }
+}
