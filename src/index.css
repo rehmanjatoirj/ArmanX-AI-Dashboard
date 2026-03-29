@@ -1,10 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --bg-primary: #0a0f1e;
+    --bg-card: #111827;
+    --bg-card2: #0f172a;
+    --border: #1e3a5f;
+    --blue: #0a66c2;
+    --gold: #f5c518;
+    --green: #10b981;
+    --amber: #ff9800;
+    --red: #ef4444;
+    --pink: #ff4c7f;
+    --purple: #8b5cf6;
+    --text-primary: #e8eef7;
+    --text-muted: #7b8fb0;
+  }
+
   html {
     color-scheme: dark;
   }
@@ -14,28 +30,135 @@
   }
 
   body {
-    @apply min-h-screen bg-brand-navy bg-brand-grid font-sans text-slate-100 antialiased transition-colors duration-300;
+    @apply min-h-screen font-sans antialiased transition-colors duration-300;
+    background:
+      radial-gradient(circle at top right, rgba(10, 102, 194, 0.12), transparent 28%),
+      radial-gradient(circle at bottom left, rgba(245, 197, 24, 0.08), transparent 30%),
+      var(--bg-primary);
+    color: var(--text-primary);
   }
 
   html.light body {
-    @apply bg-slate-50 text-slate-900;
-    background-image:
-      radial-gradient(circle at top right, rgba(0, 212, 255, 0.08), transparent 32%),
-      radial-gradient(circle at bottom left, rgba(29, 158, 117, 0.1), transparent 35%);
+    background:
+      radial-gradient(circle at top right, rgba(10, 102, 194, 0.08), transparent 32%),
+      radial-gradient(circle at bottom left, rgba(245, 197, 24, 0.08), transparent 35%),
+      #f8fafc;
+    color: #0f172a;
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 212, 255, 0.4) transparent;
+    scrollbar-color: rgba(123, 143, 176, 0.55) transparent;
+    box-sizing: border-box;
+  }
+
+  button,
+  input,
+  select {
+    font: inherit;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.4;
+      transform: scale(0.85);
+    }
   }
 }
 
 @layer utilities {
   .panel {
-    @apply rounded-3xl border border-white/10 bg-white/5 shadow-soft backdrop-blur-xl;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
   }
 
   html.light .panel {
-    @apply border-slate-200 bg-white shadow-lg;
+    background: #ffffff;
+    border-color: #dbe5f0;
+  }
+
+  .panel-muted {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .section-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .text-muted-ui {
+    color: var(--text-muted);
+  }
+
+  .pulse-dot {
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .filter-pill {
+    @apply inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-semibold transition;
+    border-color: var(--border);
+    color: var(--text-muted);
+    background: rgba(17, 24, 39, 0.7);
+  }
+
+  .filter-pill-active {
+    border-color: rgba(10, 102, 194, 0.9);
+    color: var(--text-primary);
+    background: rgba(10, 102, 194, 0.18);
+  }
+
+  .status-pill {
+    @apply inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold;
+  }
+
+  .status-running {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--green);
+    border-color: rgba(16, 185, 129, 0.45);
+  }
+
+  .status-paused,
+  .status-warm {
+    background: rgba(255, 152, 0, 0.12);
+    color: var(--amber);
+    border-color: rgba(255, 152, 0, 0.45);
+  }
+
+  .status-error,
+  .status-hot {
+    background: rgba(239, 68, 68, 0.12);
+    color: var(--red);
+    border-color: rgba(239, 68, 68, 0.45);
+  }
+
+  .status-cold {
+    background: rgba(123, 143, 176, 0.12);
+    color: var(--text-muted);
+    border-color: rgba(123, 143, 176, 0.45);
+  }
+
+  .status-converted,
+  .status-active {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--green);
+    border-color: rgba(16, 185, 129, 0.45);
+  }
+
+  .status-draft {
+    background: rgba(245, 197, 24, 0.12);
+    color: var(--gold);
+    border-color: rgba(245, 197, 24, 0.45);
   }
 }

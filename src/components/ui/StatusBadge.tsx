@@ -6,19 +6,20 @@ interface StatusBadgeProps {
 }
 
 const statusClasses: Record<Agent['status'], string> = {
-  running: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/30 light:text-emerald-600',
-  paused: 'bg-amber-500/15 text-amber-300 ring-amber-400/30 light:text-amber-600',
-  error: 'bg-rose-500/15 text-rose-300 ring-rose-400/30 light:text-rose-600',
-  idle: 'bg-slate-500/15 text-slate-300 ring-slate-400/20 light:text-slate-600',
+  running: 'status-pill status-running',
+  paused: 'status-pill status-paused',
+  error: 'status-pill status-error',
+};
+
+const dotClasses: Record<Agent['status'], string> = {
+  running: 'bg-[#10B981]',
+  paused: 'bg-[#FF9800]',
+  error: 'bg-[#EF4444]',
 };
 
 export const StatusBadge = ({ status }: StatusBadgeProps) => (
-  <span
-    className={cn(
-      'inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold capitalize ring-1',
-      statusClasses[status],
-    )}
-  >
-    {status}
+  <span className={cn(statusClasses[status])}>
+    <span className={cn('h-2 w-2 rounded-full', dotClasses[status])} />
+    {status.charAt(0).toUpperCase() + status.slice(1)}
   </span>
 );

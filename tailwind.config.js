@@ -8,31 +8,28 @@ export default {
     extend: {
       colors: {
         brand: {
-          navy: '#0D1530',
-          teal: '#1D9E75',
-          cyan: '#00D4FF',
-          ink: '#121A34',
-          mist: '#E8F2FF',
+          navy: '#0A0F1E',
+          teal: '#0A66C2',
+          cyan: '#F5C518',
+          ink: '#111827',
+          mist: '#E8EEF7',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-      },
-      boxShadow: {
-        soft: '0 18px 45px rgba(3, 10, 30, 0.25)',
+        sans: ['Manrope', 'sans-serif'],
       },
       backgroundImage: {
         'brand-grid':
-          'radial-gradient(circle at top right, rgba(0, 212, 255, 0.12), transparent 30%), radial-gradient(circle at bottom left, rgba(29, 158, 117, 0.14), transparent 32%)',
+          'radial-gradient(circle at top right, rgba(10, 102, 194, 0.12), transparent 30%), radial-gradient(circle at bottom left, rgba(245, 197, 24, 0.14), transparent 32%)',
       },
       keyframes: {
-        pulseSoft: {
+        pulse: {
           '0%, 100%': { opacity: '1', transform: 'scale(1)' },
-          '50%': { opacity: '0.55', transform: 'scale(0.92)' },
+          '50%': { opacity: '0.4', transform: 'scale(0.85)' },
         },
       },
       animation: {
-        'pulse-soft': 'pulseSoft 1.8s ease-in-out infinite',
+        pulse: 'pulse 2s ease-in-out infinite',
       },
     },
   },

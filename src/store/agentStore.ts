@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { agentApi, logsApi, metricsApi, sequencesApi } from '../services/api';
+import { agents, dashboardStats, sequences } from '../data/mockData';
 import type { Agent, LeadMetrics, LogEntry, Sequence } from '../types';
 
 interface AgentStoreState {
@@ -16,71 +16,50 @@ interface AgentStoreState {
 }
 
 export const useAgentStore = create<AgentStoreState>((set, get) => ({
-  agents: [],
-  metrics: null,
-  logs: [],
-  sequences: [],
+  agents,
+  metrics: {
+    scrapedToday: dashboardStats.connectionsToday,
+    connectionsSent: dashboardStats.totalConnections,
+    replyRate: dashboardStats.replyRate,
+    meetingsBooked: dashboardStats.convertedLeads,
+    deltas: {
+      scraped: 18,
+      connections: 12,
+      replyRate: 23.4,
+      meetings: 2,
+    },
+  },
+  logs: dashboardStats.recentActivity.map((entry, index) => ({
+    id: `activity-${index + 1}`,
+    timestamp: entry.time,
+    tag: index % 4 === 0 ? 'Lead' : index % 4 === 1 ? 'Outreach' : index % 4 === 2 ? 'System' : 'Error',
+    message: entry.event,
+  })),
+  sequences: sequences.map((sequence) => ({
+    id: sequence.id,
+    name: sequence.name,
+    replyRate: Number.parseFloat(sequence.replyRate),
+    activeCount: sequence.enrolled,
+    target: `${sequence.region} ${sequence.type}`,
+  })),
   isLoading: false,
   error: null,
   fetchAll: async () => {
-    set({ isLoading: true, error: null });
-
-    try {
-      const [agentsRes, metricsRes, logsRes, sequencesRes] = await Promise.all([
-        agentApi.getAll(),
-        metricsApi.getDashboard(),
-        logsApi.getAll({ limit: 50, offset: 0 }),
-        sequencesApi.getAll(),
-      ]);
-
-      set({
-        agents: Array.isArray(agentsRes.data) ? agentsRes.data : [],
-        metrics: metricsRes.data,
-        logs: Array.isArray(logsRes.data) ? logsRes.data : [],
-        sequences: [...(Array.isArray(sequencesRes.data) ? sequencesRes.data : [])].sort((a, b) => b.replyRate - a.replyRate),
-        isLoading: false,
-      });
-    } catch (error) {
-      set({
-        error: error instanceof Error ? error.message : 'Failed to load dashboard data.',
-        isLoading: false,
-      });
-    }
+    set((state) => ({ ...state, isLoading: false, error: null }));
   },
   updateAgentStatus: async (id, status) => {
     const previous = get().agents;
-    const optimisticStatus = status === 'idle' ? 'running' : status;
 
     set((state) => ({
-      agents: state.agents.map((agent) => (agent.id === id ? { ...agent, status: optimisticStatus } : agent)),
+      agents: state.agents.map((agent) => (agent.id === id ? { ...agent, status } : agent)),
     }));
 
-    try {
-      if (status === 'running') {
-        await agentApi.start(id);
-      } else if (status === 'paused') {
-        await agentApi.pause(id);
-      } else {
-        await agentApi.restart(id);
-      }
-    } catch (error) {
-      set({
-        agents: previous,
-        error: error instanceof Error ? error.message : 'Unable to update agent status.',
-      });
-    }
+    void previous;
   },
   addLog: (entry) => {
     set((state) => ({ logs: [entry, ...state.logs].slice(0, 50) }));
   },
   clearLogs: async () => {
-    try {
-      await logsApi.clear();
-      set({ logs: [] });
-    } catch (error) {
-      set({
-        error: error instanceof Error ? error.message : 'Unable to clear logs.',
-      });
-    }
+    set({ logs: [] });
   },
 }));

@@ -51,7 +51,11 @@ export const bootstrap = async () => {
 };
 
 if (!isTest) {
-  void bootstrap().catch(() => {
-    process.exit(1);
-  });
+  const isServerlessRuntime = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
+
+  if (!isServerlessRuntime) {
+    void bootstrap().catch(() => {
+      process.exit(1);
+    });
+  }
 }

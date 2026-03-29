@@ -1,14 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { ProtectedRoute } from './components/ProtectedRoute';
 import { Sidebar } from './components/layout/Sidebar';
 import { TopBar } from './components/layout/TopBar';
-import { AuthProvider, useAuth } from './context/AuthContext';
 import { Dashboard } from './pages/Dashboard';
 import { Agents } from './pages/Agents';
 import { Leads } from './pages/Leads';
-import { Login } from './pages/Login';
-import { Register } from './pages/Register';
 import { Sequences } from './pages/Sequences';
 import { Settings } from './pages/Settings';
 import { useAgentStore } from './store/agentStore';
@@ -36,7 +32,6 @@ const getInitialTheme = (): 'dark' | 'light' => {
 
 const AppShell = () => {
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
   const [theme, setTheme] = useState<'dark' | 'light'>(getInitialTheme);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const agents = useAgentStore((state) => state.agents);
@@ -44,10 +39,8 @@ const AppShell = () => {
   const runningAgents = useMemo(() => agents.filter((agent) => agent.status === 'running').length, [agents]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      void fetchAll();
-    }
-  }, [fetchAll, isAuthenticated]);
+    void fetchAll();
+  }, [fetchAll]);
 
   useEffect(() => {
     document.documentElement.classList.toggle('light', theme === 'light');
@@ -58,17 +51,6 @@ const AppShell = () => {
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
-
-  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
-
-  if (isAuthPage) {
-    return (
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-    );
-  }
 
   return (
     <div className="min-h-screen">
@@ -84,54 +66,12 @@ const AppShell = () => {
           />
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/agents"
-              element={
-                <ProtectedRoute>
-                  <Agents />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/agents/:id"
-              element={
-                <ProtectedRoute>
-                  <Agents />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/leads"
-              element={
-                <ProtectedRoute>
-                  <Leads />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/sequences"
-              element={
-                <ProtectedRoute>
-                  <Sequences />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/agents" element={<Agents />} />
+            <Route path="/agents/:id" element={<Agents />} />
+            <Route path="/leads" element={<Leads />} />
+            <Route path="/sequences" element={<Sequences />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </main>
@@ -140,10 +80,6 @@ const AppShell = () => {
   );
 };
 
-const App = () => (
-  <AuthProvider>
-    <AppShell />
-  </AuthProvider>
-);
+const App = () => <AppShell />;
 
 export default App;

@@ -10,11 +10,13 @@ interface AgentStatusTableProps {
 }
 
 const queueLabel = (agent: Agent) => {
-  if (agent.queueCount === 0) {
+  const queueCount = agent.queueCount ?? agent.used;
+
+  if (queueCount === 0) {
     return '-';
   }
 
-  return agent.type === 'messenger' ? `${agent.queueCount} msgs` : `${agent.queueCount} pending`;
+  return agent.type === 'outreach' ? `${queueCount} msgs` : `${queueCount} pending`;
 };
 
 export const AgentStatusTable = ({ agents, onUpdateStatus }: AgentStatusTableProps) => (
@@ -56,7 +58,7 @@ export const AgentStatusTable = ({ agents, onUpdateStatus }: AgentStatusTablePro
                 <StatusBadge status={agent.status} />
               </td>
               <td className="px-6 py-4">{queueLabel(agent)}</td>
-              <td className="px-6 py-4">{agent.lastRunAt}</td>
+              <td className="px-6 py-4">{agent.lastRunAt ?? agent.lastPing}</td>
               <td className="px-6 py-4">
                 <div className="flex flex-wrap gap-2">
                   <Button variant="secondary" className="px-3 py-1.5" onClick={() => onUpdateStatus(agent.id, 'running')}>
@@ -67,7 +69,7 @@ export const AgentStatusTable = ({ agents, onUpdateStatus }: AgentStatusTablePro
                     <Pause className="mr-1 h-3.5 w-3.5" />
                     Pause
                   </Button>
-                  <Button variant="ghost" className="px-3 py-1.5" onClick={() => onUpdateStatus(agent.id, 'idle')}>
+                  <Button variant="ghost" className="px-3 py-1.5" onClick={() => onUpdateStatus(agent.id, 'running')}>
                     <RotateCcw className="mr-1 h-3.5 w-3.5" />
                     Restart
                   </Button>
